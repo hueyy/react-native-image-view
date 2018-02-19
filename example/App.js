@@ -8,7 +8,7 @@ import {
     Dimensions,
 } from 'react-native';
 
-import ImageView from 'react-native-image-view';
+import ImageView from '../index';
 
 const {width} = Dimensions.get('window');
 
@@ -106,6 +106,14 @@ export default class App extends Component {
         );
     }
 
+    renderHeader(close){
+        return (
+            <TouchableOpacity onPress={() => close()}>
+                <Text style={{color: 'white'}}>Hello</Text>
+            </TouchableOpacity>
+        )
+    }
+
     render() {
         const {isImageViewVisible, currentImage} = this.state;
 
@@ -138,6 +146,7 @@ export default class App extends Component {
                     title={currentImage.title}
                     isVisible={isImageViewVisible}
                     renderFooter={() => this.renderFooter(currentImage)}
+                    renderHeader={close => this.renderHeader(close)}
                 />
             </View>
         );

@@ -71,6 +71,7 @@ type PropsType = {
     animationType: 'none' | 'fade' | 'scale',
     onClose: () => {},
     renderFooter: () => {},
+    renderHeader: (close) => {},
 };
 
 const CLOSE_SPEED = 1.1;
@@ -86,7 +87,7 @@ const styles = StyleSheet.create({
     },
     header: {
         position: 'absolute',
-        top: 0,
+        top: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
         left: 0,
         zIndex: 100,
         height: HEADER_HEIGHT,
@@ -533,7 +534,7 @@ export default class ImageView extends Component<PropsType> {
     }
 
     render() {
-        const {animationType, renderFooter} = this.props;
+        const {animationType, renderFooter, renderHeader} = this.props;
         const {
             modalAnimation,
             isVisible,
@@ -592,12 +593,18 @@ export default class ImageView extends Component<PropsType> {
                 <Animated.View
                     style={[styles.header, {transform: headerTranslate}]}
                 >
-                    <TouchableOpacity
-                        style={styles.closeButton}
-                        onPress={() => { this.close(); }}
-                    >
-                        <Text style={styles.closeButton__text}>×</Text>
-                    </TouchableOpacity>
+                    {
+                        typeof renderHeader === 'function' ? (
+                            renderHeader(this.close.bind(this))
+                        ) : (
+                            <TouchableOpacity
+                                style={styles.closeButton}
+                                onPress={() => { this.close(); }}
+                            >
+                                <Text style={styles.closeButton__text}>×</Text>
+                            </TouchableOpacity>
+                        )
+                    }
                 </Animated.View>
                 <View
                     style={styles.container}
